@@ -14,7 +14,7 @@ $finalout = ForEach ($filepath in $filelist)
         }
         New-Object -Type PSObject -Property $out
     }
-$final > $FileName
+$finalout > $FileName
     
 
 function exfilData {
