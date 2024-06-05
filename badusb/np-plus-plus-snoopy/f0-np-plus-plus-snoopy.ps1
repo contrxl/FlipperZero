@@ -8,7 +8,7 @@ $filelist = Get-ChildItem $fullpath\*@*
 
 
 function readBackup{
-    $backupcontents = ForEach ($file n $filelist)
+    $backupcontents = ForEach ($file in $filelist)
     {
         $filecontent = Get-Content -Path $file
         [pscustomobject]@{
