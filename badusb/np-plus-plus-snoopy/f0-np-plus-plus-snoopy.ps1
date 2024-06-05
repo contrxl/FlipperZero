@@ -13,9 +13,9 @@ function Get-backupContents{
             'FileContent:' = $filecontent
         }
     }
-    return $backupContents
+    return $backupcontents
 }
-$backupContents = Get-backupContents
+$backupcontents = Get-backupContents
 $out = ConvertTo-Json $backupcontents
 $out > $FileName 
 
